@@ -1,0 +1,65 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+*.whl
+
+# Environments
+.env
+venv/
+env/
+ENV/
+bin/
+include/
+lib/
+local/
+
+# Django stuff:
+*.log
+local_settings.py  # A common pattern for local-only settings
+db.sqlite3
+/media/            # User-uploaded media files (can be large or environment-specific)
+/static/           # Collected static files (if generated on deployment)
+
+# Sensitive data
+.env               # Ignore all environment variable files
+.flaskenv
+
+# IDE and editor files
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# OS-specific files
+.DS_Store
+.DS_Store?
+._*
+ehthumbs.db
+Thumbs.db
+
+# Testing and coverage
+.coverage
+.pytest_cache/
+htmlcov/
+.tox/

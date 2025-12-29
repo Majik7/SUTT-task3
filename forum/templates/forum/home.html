@@ -1,0 +1,14 @@
+{% extends "forum/base.html" %}
+
+{% block content %}
+    <h1>Hello !!</h1>
+    <p>You are logged in from {{ user.email }} as {{ user.first_name }} {{ user.last_name }}</p>
+
+    {% if user.socialaccount_set.all %}
+        <img src="{{ user.socialaccount_set.all.0.get_avatar_url }}" alt="Profile Picture" />
+    {% endif %}
+
+    <br>
+    <br>
+    <a href = "{% url 'account_logout' %}">Logout</a>
+{% endblock content%}
