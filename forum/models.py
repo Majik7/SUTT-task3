@@ -20,6 +20,7 @@ class Reply(models.Model):
     date_posted = models.DateTimeField(default = timezone.now)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     post = models.ForeignKey('Post', on_delete=models.CASCADE) 
+    is_deleted = models.BooleanField(default=False)
 
     def __str__(self) -> str:
         return f'Reply to post - {self.post}'
