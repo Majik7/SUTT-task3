@@ -1,6 +1,9 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from datetime import datetime
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic.edit import CreateView
+from .models import Post, Category
 
 dummy_threads = [
         {
@@ -34,9 +37,30 @@ dummy_threads = [
 
 # Create your views here.
 def home(request):
+    category_list = Category.objects.all()
+    total_posts_count = Category.objects.all().count()
+    post_list = Post.objects.all().order_by('-date_posted')
+
     context = {
-        "title": "Forum List",
-        "threads": dummy_threads,
-        "total_posts_count": len(dummy_threads),
+        "category_list": category_list,
+        "total_posts_count": total_posts_count,
+        "post_list": post_list,
     }
     return render(request, 'forum/home.html', context=context)
+
+class newPost(CreateView, LoginRequiredMixin):
+    model = Post
+    fields = ['title', 'content', 'category']
+
+    template_name = 'forum/create.html'
+
+    
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+    
+def postView(request, post_id):
+    post = Post.objects.get(pk = post_id)
+
+    return render(request, 'forum/post.html', context={"post": post})

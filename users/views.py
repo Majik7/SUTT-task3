@@ -4,7 +4,7 @@ from django.contrib.auth import logout
 # Create your views here.
 def home(request):
     if request.user.is_authenticated:
-        return render(request, 'forum/home.html')
+        return redirect("/posts")
     else:
         return render(request, 'users/login.html')
 

@@ -38,7 +38,7 @@ class Command(BaseCommand):
 
         # for categories
         category_list = [
-            {"name": "General Queries", "slug": "general-queries", "desc": "General Queries"},
+            {"name": "General Queries", "slug": "general-queries", "desc": "Ask questions that don't belong to any specific category"},
             {"name": "Doubts", "slug": "doubts", "desc": "To ask doubts"},
             {"name": "Resource Request", "slug": "resource-request", "desc": "Ask for resources"},
         ]
