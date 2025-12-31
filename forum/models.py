@@ -42,3 +42,8 @@ class Post(models.Model):
     # extract id from email
     def author_id_extracted(self): # using author_id conflicted with django names
         return self.author.email[1:9]
+    
+class Report(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    reason = models.CharField(max_length=50)
+    desc = models.TextField()
