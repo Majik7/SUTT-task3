@@ -28,5 +28,5 @@ urlpatterns = [
     path('category/<str:cat_slug>', views.categoryView, name="category"),
 
     # profile
-    path('profile/<int:user_id>', views.profileView, name='profile'),
+    path('profile/<int:profile_id>', views.profileView, name='profile'),
 ]

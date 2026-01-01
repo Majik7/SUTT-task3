@@ -136,6 +136,7 @@ def deleteReply(request, reply_id):
 def profileView(request, profile_id):
     profile_user = get_object_or_404(User, email = f"f{profile_id}@pilani.bits-pilani.ac.in")
     is_mod = profile_user.groups.filter(name='Moderators').count()
+    
     user_posts = profile_user.post_set.all().order_by('-pk') # type: ignore
     return render(request, 'forum/profile.html', context= {
         'profile_user': profile_user,

@@ -84,7 +84,7 @@
                                         {% endif %}
                                     </div>
                                     <a href="{% url 'forum:post' post.pk %}" class="forum-item-title">{{ post.title }} </a>
-                                    <div class="forum-sub-title">{{ post.content }}</div>
+                                    <div class="forum-sub-title">{{ post.content|truncatechars:100 }}</div>
                                 </div>
 
                                 <div class="col-md-1 offset-md-2 forum-info">
