@@ -11,6 +11,33 @@
 
                 <div class="ibox-content m-b-sm border-bottom">
                     <div class="p-xs">
+                        <div class="pull-left m-r-md">
+                            <a href="/">
+                            <img src="{% static 'images/studydeck.png' %}" 
+                                alt="studydeck-icon"
+                                class="mid-icon" 
+                                style="width: 1.5em; height: 1.5em; object-fit: contain; vertical-align: middle; margin-top: -10px;">
+                            </a>
+                        </div>
+
+                        <div class="pull-right m-r-md"> <!-- just replace pull-left w/ pull-right-->>
+                            <a href="{% url 'account_logout' %}" class="btn btn-danger btn-sm" style="margin-top: 20px;">Logout</a>
+                        </div>
+
+                        <h2 style="text-align: center;">StudyDeck Forum</h2>
+
+                    <div class="text-center">
+                        {% if user.socialaccount_set.all %}
+                            <span>Logged in as {{ user.first_name }} {{ user.last_name }}</span>
+                        {% else %}
+                            <span>Logged in as ADMIN</span>
+                        {% endif %}
+                    </div>
+                    </div>
+                </div>
+
+                <div class="ibox-content m-b-sm border-bottom">
+                    <div class="p-xs">
                         {% if user.is_staff or is_mod %}
                             <div class="pull-right">
                                 <a href="{% url 'forum:view_post_reports' post.id %}" class="btn btn-warning btn-xs">

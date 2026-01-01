@@ -94,7 +94,7 @@
                                 <div class="col-md-9">
                                     <div class="forum-icon">
                                         {% if post.author.socialaccount_set.all %}
-                                            <a href="/profile/{{ post.author_id_extracted }}">
+                                            <a href="{% url 'forum:profile' post.author_id_extracted %}">
                                             <img src="{{ post.author.socialaccount_set.all.0.get_avatar_url }}" 
                                                 alt="Profile Picture"
                                                 class="rounded-circle border"
@@ -105,7 +105,7 @@
                                         {% endif %}
                                     </div>
                                     <a href="{% url 'forum:post' post.id %}" class="forum-item-title">{{ post.title }} </a>
-                                    <div class="forum-sub-title">{{ post.content }}</div>
+                                    <div class="forum-sub-title">{{ post.content | truncatechars:100 }}</div>
                                 </div>
                                 <!-- <div class="col-md-1 forum-info">
                                     <span class="views-number">

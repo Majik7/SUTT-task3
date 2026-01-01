@@ -5,6 +5,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import CreateView
 from .models import Post, Category, Reply
 from .forms import replyForm, reportForm
+from django.contrib.auth.models import User
 
 # Create your views here.
 def home(request):
@@ -88,8 +89,18 @@ def deleteReply(request, reply_id):
     else:
         return HttpResponse(f"<h1>You are not allowed here f{request.user.username}</h1>")
     
+
 def profileView(request, profile_id):
-    return HttpResponse(f"<h1>Your id is {profile_id}</h1>")
+    profile_user = get_object_or_404(User, email = f"f{profile_id}@pilani.bits-pilani.ac.in")
+    is_mod = profile_user.groups.filter(name='Moderators').count()
+    user_posts = profile_user.post_set.all().order_by('-pk') # type: ignore
+    return render(request, 'forum/profile.html', context= {
+        'profile_user': profile_user,
+        'user_posts': user_posts,
+        'user_post_count': user_posts.count(),
+        'reply_count': profile_user.reply_set.count(), # type: ignore
+        'is_mod': is_mod,
+    })
 
 def reportPost(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
