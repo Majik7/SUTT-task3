@@ -39,14 +39,21 @@
 
                 <div class="ibox-content m-b-sm border-bottom">
                     <div class="p-xs">
-                        
+                        <div class="row" style="display: flex; align-items: center;">
+                            <div class="col-md-3"></div>
 
-                        {% if user.is_authenticated %}
-                                <h2 style="text-align: center;">{{ category.name }}</h2>
-                        {% endif %}
-                        
-                        <div class="text-center">
-                            <span>{{ category.desc }}</span>
+                            <div class="col-md-6 text-center">
+                                {% if user.is_authenticated %}
+                                    <h2 style="margin: 0;">{{ category.name }}</h2>
+                                {% endif %}
+                                <span class="text-center">{{ category.desc }}</span>
+                            </div>
+
+                            <div class="col-md-3 text-right">
+                                <a href="{% url 'forum:create_post_cat' category.pk %}" class="btn btn-primary btn-sm">
+                                    <i class="fa fa-pencil"></i> Create Post
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>

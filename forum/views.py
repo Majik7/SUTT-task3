@@ -3,8 +3,8 @@ from django.http import HttpResponse
 from datetime import datetime
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import CreateView
-from .models import Post, Category, Reply
-from .forms import replyForm, reportForm
+from .models import Post, Category, Reply, Report
+from .forms import replyForm, reportForm, postForm
 from django.contrib.auth.models import User
 
 # Create your views here.
@@ -20,21 +20,64 @@ def home(request):
     }
     return render(request, 'forum/home.html', context=context)
 
-class newPost(CreateView, LoginRequiredMixin):
-    model = Post
-    fields = ['title', 'content', 'category', 'course']
+def createPostWCat(request, category_id = None):
+    initial_data = {}
+    if category_id:
+        initial_data['category'] = category_id
 
-    template_name = 'forum/create.html'
+    if request.method == 'POST':
+        form = postForm(request.POST)
 
-    def form_valid(self, form):
-        form.instance.author = self.request.user
-        return super().form_valid(form)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user
+            post.save()
+
+            return redirect('forum:post', post_id = post.pk)
+    else:
+        form = postForm(initial=initial_data)
+
+    return render(request, 'forum/create_post.html', {'form': form})
+
+def createPost(request):
+    if request.method == 'POST':
+        form = postForm(request.POST)
+
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user
+            post.save()
+
+            return redirect('forum:post', post_id = post.pk)
+    else:
+        form = postForm()
+
+    return render(request, 'forum/create_post.html', {'form': form})
+
+def deletePost(request, post_id):
+    post = get_object_or_404(Post, pk=post_id)
+    
+    if post.author == request.user or request.user.is_staff or request.user.groups.filter(name='Moderators').count():
+        post.delete()
+
+        return redirect('forum:home')
+    else:
+        return HttpResponse(f"<h1>You are not allowed here {request.user.username}</h1>")
+    
+def likePost(request, post_id):
+    post = get_object_or_404(Post, pk=post_id)
+    if post.likes.filter(id=request.user.id).exists():
+        post.likes.remove(request.user)
+    else:
+        post.likes.add(request.user)
+    return redirect('forum:post', post_id=post_id)
     
 def postView(request, post_id):
     post = Post.objects.get(pk = post_id)
     is_mod = request.user.groups.filter(name='Moderators').count()
+    report_list = post.report_set.filter(status='P')
 
-    return render(request, 'forum/post.html', context={'post': post, 'is_mod': is_mod})
+    return render(request, 'forum/post.html', context={'post': post, 'is_mod': is_mod, 'report_list': report_list})
 
 def newReply(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
@@ -125,16 +168,44 @@ def viewPostReports(request, post_id):
 
     if request.user.is_staff or is_mod:
         post = Post.objects.get(pk = post_id)
-        return render(request, 'forum/view_post_reports.html', context={'post': post, 'is_mod': is_mod})
+        report_list = post.report_set.filter(status='P') # type: ignore
+        return render(request, 'forum/view_post_reports.html', context={'post': post, 'is_mod': is_mod, 'report_list': report_list})
     
     else:
         return HttpResponse('<h1>You are not allowed here</h1>')
     
+def resolveReport(request, report_id):
+    is_mod = request.user.groups.filter(name='Moderators').count()
+
+    if request.user.is_staff or is_mod:
+        report = get_object_or_404(Report, pk=report_id)
+        post = report.post
+        report.status = 'R'
+        report.save()
+
+        return redirect('forum:view_post_reports', post_id = post.pk)
+    
+    else:
+        return HttpResponse("<h1>You are not allowed here</h1>")
+
+
 def lockPost(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
 
     if request.user.is_staff or request.user.groups.filter(name='Moderators').count():
         post.is_locked = True
+        post.save()
+
+        return redirect('forum:post', post_id = post_id)
+    
+    else:
+        return HttpResponse("<h1>You are not allowed here</h1>")
+    
+def unlockPost(request, post_id):
+    post = get_object_or_404(Post, pk=post_id)
+
+    if request.user.is_staff or request.user.groups.filter(name='Moderators').count():
+        post.is_locked = False
         post.save()
 
         return redirect('forum:post', post_id = post_id)

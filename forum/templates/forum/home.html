@@ -18,8 +18,13 @@
                                 style="width: 1.5em; height: 1.5em; object-fit: contain; vertical-align: middle; margin-top: -10px;">
                         </div>
 
-                        <div class="pull-right m-r-md"> <!-- just replace pull-left w/ pull-right-->>
-                            <a href="{% url 'account_logout' %}" class="btn btn-danger btn-sm" style="margin-top: 20px;">Logout</a>
+                        <div class="pull-right">
+                            <a href="{% url 'forum:create_post' %}" class="btn btn-primary btn-sm" style="margin-top: 20px; margin-right: 5px;">
+                                <i class="fa fa-plus"></i> Create Post
+                            </a>
+                            <a href="{% url 'account_logout' %}" class="btn btn-danger btn-sm" style="margin-top: 20px;">
+                                <i class="fa fa-sign-out"></i> Logout
+                            </a>
                         </div>
 
                         {% if user.is_authenticated %}
@@ -114,16 +119,16 @@
                                     <div>
                                         <small>Views</small>
                                     </div>
-                                </div>
-                                <div class="col-md-1 forum-info">
+                                </div> -->
+                                <div class="col-md-1 offset-md-1 forum-info">
                                     <span class="views-number">
-                                        238
+                                        {{ post.likes }}
                                     </span>
                                     <div>
-                                        <small>Topics</small>
+                                        <small>Likes</small>
                                     </div>
-                                </div> -->
-                                <div class="col-md-1 offset-md-2 forum-info">
+                                </div> 
+                                <div class="col-md-1 forum-info">
                                     <span class="views-number">
                                         {{ post.reply_set.count }}
                                     </span>

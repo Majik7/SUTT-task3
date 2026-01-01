@@ -1,0 +1,36 @@
+{% extends "forum/base.html" %}
+
+{% block content %}
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h5><i class="fa fa-pencil"></i> Create a New Discussion</h5>
+                </div>
+                <div class="ibox-content">
+                    <form method="POST">
+                        {% csrf_token %}
+                        
+                        {% for field in form %}
+                            <div class="form-group">
+                                <label class="font-bold">{{ field.label }}</label>
+                                {{ field }} {% if field.help_text %}
+                                    <small class="text-muted">{{ field.help_text }}</small>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+
+                        <div class="hr-line-dashed"></div>
+                        
+                        <div class="form-group">
+                            <button class="btn btn-primary" type="submit">Post to Forum</button>
+                            <a href="{% url 'forum:home' %}" class="btn btn-white">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

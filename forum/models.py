@@ -35,7 +35,7 @@ class Post(models.Model):
     date_posted = models.DateTimeField(default = timezone.now)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    likes = models.IntegerField(default=0)
+    likes = models.ManyToManyField(User, related_name='forum_posts', blank=True)
     is_locked = models.BooleanField(default=False)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     # tags = models.ManyToManyField(Tag)
@@ -62,6 +62,10 @@ class Report(models.Model):
     description = models.TextField()
     status = models.CharField(choices=statuschoice, max_length=15, default="P")
     author = models.ForeignKey(User, on_delete=models.CASCADE)
+    date_posted = models.DateTimeField(default=timezone.now)
     
     def __str__(self) -> str:
         return f"Report to post - {self.post.title}"
+    
+    def author_id_extracted(self): # using author_id conflicted with django names
+        return self.author.email[1:9]

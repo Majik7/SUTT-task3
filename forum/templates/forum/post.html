@@ -41,16 +41,19 @@
                         {% if user.is_staff or is_mod %}
                             <div class="pull-right">
                                 <a href="{% url 'forum:view_post_reports' post.id %}" class="btn btn-warning btn-xs">
-                                    <i class="fa fa-flag text-danger"></i> {{ post.report_set.count }} Reports
+                                    <i class="fa fa-flag text-danger"></i> {{ report_list.count}} Reports
                                 </a>
-                            </div>
-                        {% else %}
+                            </div>     
+                        {% endif %}
                             <div class="pull-right">
+                                <a href="{% url 'forum:like_post' post.id %}" class="btn btn-white btn-xs">
+                                    <i class="fa fa-thumbs-up text-info"></i> Like ({{ post.likes.count }})
+                                </a>
+
                                 <a href="{% url 'forum:report_post' post.id %}" class="btn btn-white btn-xs">
                                     <i class="fa fa-flag text-danger"></i> Report
                                 </a>
                             </div>
-                        {% endif %}
 
                         <div class="pull-left m-r-md">
                             {% if post.author.socialaccount_set.all %}
@@ -71,13 +74,14 @@
                             <div class="m-t-xs">
                                 <small class="text-muted">
                                     <a class="fa fa-folder-open" href="{% url 'forum:home' %}category/{{ post.category.slug }}"></a> 
-                                    <a href="{% url 'forum:home' %}/category/{{ post.category.slug }}"><strong >{{ post.category.name }}</strong></a> 
+                                    <a href="{% url 'forum:home' %}category/{{ post.category.slug }}"><strong >{{ post.category.name }}</strong></a> 
                                     &nbsp;&nbsp;
                                     {% if post.course %}
                                         <i class="fa fa-mortar-board"></i> <strong>{{ post.course.name }}</strong>
                                         &nbsp;&nbsp;
                                     {% endif %}
                                     <i class="fa fa-user"></i> {{ post.author.first_name }} {{ post.author.last_name }}
+                                    <i class="fa fa-clock-o"></i> Posted on {{ post.date_posted|date }} at {{ post.date_posted|time }}
                                 </small>
                             </div>
                             
@@ -126,7 +130,7 @@
                                     </div>
                                     
                                     <div class="col-md-3 forum-info">
-                                        <small>Posted at some time</small>
+                                        <small>Posted on {{ reply.date_posted|date }} at {{ reply.date_posted|time }}</small>
                                     </div>
                                 </div>
                             </div>
@@ -171,7 +175,7 @@
                                     </div>
                                     
                                     <div class="col-md-3 forum-info">
-                                        <small>Posted at some time</small>
+                                        <small>Posted on {{ reply.date_posted|date }} at {{ reply.date_posted|time }}</small>
                                     </div>
                                 </div>
                             </div>
