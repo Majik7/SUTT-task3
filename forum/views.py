@@ -4,7 +4,7 @@ from datetime import datetime
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import CreateView
 from .models import Post, Category, Reply
-from .forms import replyForm
+from .forms import replyForm, reportForm
 
 # Create your views here.
 def home(request):
@@ -62,7 +62,7 @@ def editReply(request, reply_id):
 
     if request.user == reply.author or request.user.is_staff or request.user.groups.filter(name='Moderators').count():
         if request.method == "POST":
-            form = replyForm(request.POST, instance=reply)
+            form = replyForm(request.POST, instance=reply) # instance will prefill the fields
             if form.is_valid():
                 form.save()
                 return redirect('forum:post', post_id=reply.post.pk)
@@ -83,7 +83,50 @@ def deleteReply(request, reply_id):
     if reply.author == request.user or request.user.is_staff or request.user.groups.filter(name='Moderators').count():
         reply.is_deleted = True
         reply.save()
-        
+
         return redirect('forum:post', post_id=post_id)
     else:
         return HttpResponse(f"<h1>You are not allowed here f{request.user.username}</h1>")
+    
+def profileView(request, profile_id):
+    return HttpResponse(f"<h1>Your id is {profile_id}</h1>")
+
+def reportPost(request, post_id):
+    post = get_object_or_404(Post, pk=post_id)
+
+    if request.method == "POST":
+        form = reportForm(request.POST)
+
+        if form.is_valid():
+            report = form.save(commit=False)
+            report.post = post
+            report.author = request.user
+            report.save()
+            return redirect('forum:post', post_id = post_id)
+    
+    else:
+        form = reportForm()
+
+    return render(request, 'forum/report_post.html', context={'post': post, 'form': form})
+
+def viewPostReports(request, post_id):
+    is_mod = request.user.groups.filter(name='Moderators').count()
+
+    if request.user.is_staff or is_mod:
+        post = Post.objects.get(pk = post_id)
+        return render(request, 'forum/view_post_reports.html', context={'post': post, 'is_mod': is_mod})
+    
+    else:
+        return HttpResponse('<h1>You are not allowed here</h1>')
+    
+def lockPost(request, post_id):
+    post = get_object_or_404(Post, pk=post_id)
+
+    if request.user.is_staff or request.user.groups.filter(name='Moderators').count():
+        post.is_locked = True
+        post.save()
+
+        return redirect('forum:post', post_id = post_id)
+    
+    else:
+        return HttpResponse("<h1>You are not allowed here</h1>")

@@ -11,9 +11,23 @@
 
                 <div class="ibox-content m-b-sm border-bottom">
                     <div class="p-xs">
+                        {% if user.is_staff or is_mod %}
+                            <div class="pull-right">
+                                <a href="{% url 'forum:view_post_reports' post.id %}" class="btn btn-warning btn-xs">
+                                    <i class="fa fa-flag text-danger"></i> {{ post.report_set.count }} Reports
+                                </a>
+                            </div>
+                        {% else %}
+                            <div class="pull-right">
+                                <a href="{% url 'forum:report_post' post.id %}" class="btn btn-white btn-xs">
+                                    <i class="fa fa-flag text-danger"></i> Report
+                                </a>
+                            </div>
+                        {% endif %}
+
                         <div class="pull-left m-r-md">
                             {% if post.author.socialaccount_set.all %}
-                                <a href="/profile/{{ post.author_id_extracted }}">
+                                <a href="{% url 'forum:profile' post.author_id_extracted %}">
                                     <img src="{{ post.author.socialaccount_set.all.0.get_avatar_url }}" 
                                         alt="Profile Picture"
                                         class="rounded-circle border"
@@ -29,7 +43,7 @@
                             
                             <div class="m-t-xs">
                                 <small class="text-muted">
-                                    <a class="fa fa-folder-open" href="{% url 'forum:home' %}/category/{{ post.category.slug }}"></a> 
+                                    <a class="fa fa-folder-open" href="{% url 'forum:home' %}category/{{ post.category.slug }}"></a> 
                                     <a href="{% url 'forum:home' %}/category/{{ post.category.slug }}"><strong >{{ post.category.name }}</strong></a> 
                                     &nbsp;&nbsp;
                                     {% if post.course %}
@@ -51,11 +65,18 @@
                 <div class="ibox-content forum-container">
                     
                     <div class="forum-title">
-                        <div class="pull-right">
-                            <a href="{% url 'forum:reply' post.id %}" class="btn btn-primary btn-sm">
-                                <i class="fa fa-plus"></i> Add Reply
-                            </a>
-                        </div>
+                        {% if post.is_locked %}
+                            <div class="pull-right">
+                                <strong>This post is locked</strong><br>
+                                <strong>No more replies can be added</strong>
+                            </div>
+                        {% else %}
+                            <div class="pull-right">
+                                <a href="{% url 'forum:reply' post.id %}" class="btn btn-primary btn-sm">
+                                    <i class="fa fa-plus"></i> Add Reply
+                                </a>
+                            </div>
+                        {% endif %}
                         <h3>Replies</h3>
                     </div>
 
@@ -89,7 +110,7 @@
                                     <div class="col-md-9">
                                         <div class="forum-icon">
                                             {% if reply.author.socialaccount_set.all %}
-                                                <a href="/profile/{{ reply.author_id_extracted }}">
+                                                <a href="{% url 'forum:profile' reply.author_id_extracted %}">
                                                     <img src="{{ reply.author.socialaccount_set.all.0.get_avatar_url }}" 
                                                         alt="Profile Picture"
                                                         class="rounded-circle border"

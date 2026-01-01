@@ -1,0 +1,58 @@
+{% extends "forum/base.html" %}
+{% load static %}
+
+{% block content %}
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="wrapper wrapper-content animated fadeInRight">
+
+                    <div class="ibox-content m-b-sm border-bottom">
+                        <div class="p-xs">
+                            <div class="pull-left m-r-md">
+                                <i class="fa fa-reply text-navy mid-icon" style="font-size: 48px;"></i>
+                            </div>
+                            <h2>Reporting {{ post.title }}</h2>
+                            <span>Please ensure the report is justified</span>
+                        </div>
+                    </div>
+
+                    <div class="ibox-content forum-container">
+                        <div class="forum-title">
+                            <h3>Report</h3>
+                        </div>
+
+                        <div class="forum-item p-md">
+                            <form method="post">
+                                {% csrf_token %}
+                                
+                                <div class="m-t-sm">
+                                    {{ form.as_p }}
+                                </div>
+
+                                <div class="hr-line-dashed"></div>
+
+                                <br>
+                                <br>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <button class="btn btn-primary btn-sm d-block mb-2" type="submit">
+                                            Report Post
+                                        </button>
+                                        
+                                        <a href="{% url 'forum:post' post.id %}" class="btn btn-primary btn-sm d-block" style="width: fit-content;">
+                                            Cancel
+                                        </a>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

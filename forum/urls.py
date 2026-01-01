@@ -10,4 +10,8 @@ urlpatterns = [
     path('category/<str:cat_slug>', views.categoryView, name="category"),
     path('reply/<int:reply_id>/edit', views.editReply, name='editreply'),
     path('reply/<int:reply_id>/delete', views.deleteReply, name='deletereply'),
+    path('profile/<int:profile_id>', views.profileView, name='profile'),
+    path('post/<int:post_id>/report', views.reportPost, name='report_post'),
+    path('reports/post/<int:post_id>', views.viewPostReports, name='view_post_reports'),
+    path('post/<int:post_id>/lock', views.lockPost, name='lock_post'),
 ]

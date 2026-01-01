@@ -23,11 +23,7 @@
                         </div>
 
                         {% if user.is_authenticated %}
-                            {% if user.is_superuser %}
                                 <h2>{{ category.name }}</h2>
-                            {% else %}
-                                <h2>{{ category.name }}</h2>
-                            {% endif %}
                         {% endif %}
                         <span>{{ category.desc }}</span>
                     </div>

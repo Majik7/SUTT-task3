@@ -1,0 +1,126 @@
+{% extends 'forum/base.html' %}
+{% load static %}
+
+{% block content %}
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="wrapper wrapper-content animated fadeInRight">
+
+                <div class="ibox-content m-b-sm border-bottom">
+                    <div class="p-xs">
+                        {% if user.is_staff or is_mod %}
+                            <div class="pull-right">
+                                <a href="{% url 'forum:lock_post' post.id %}" class="btn btn-warning btn-xs" onclick="return confirm('Are you sure you want to lock this post?');">
+                                    <i class="fa fa-flag text-danger"></i> Lock Post
+                                </a>
+                            </div>
+                        {% else %}
+                            <div class="pull-right">
+                                <a href="{% url 'forum:report_post' post.id %}" class="btn btn-white btn-xs">
+                                    <i class="fa fa-flag text-danger"></i> Report
+                                </a>
+                            </div>
+                        {% endif %}
+
+                        <div class="pull-left m-r-md">
+                            {% if post.author.socialaccount_set.all %}
+                                <a href="{% url 'forum:profile' post.author_id_extracted %}">
+                                    <img src="{{ post.author.socialaccount_set.all.0.get_avatar_url }}" 
+                                        alt="Profile Picture"
+                                        class="rounded-circle border"
+                                        style="width: 3.5em; height: 3.5em; object-fit: cover;" />
+                                </a>
+                            {% else %}
+                                <i class="fa fa-comments-o text-navy mid-icon" style="font-size: 48px;"></i>
+                            {% endif %}
+                        </div>
+
+                        <div class="clear">
+                            <h2 class="m-b-none">{{ post.title }}</h2>
+                            
+                            <div class="m-t-xs">
+                                <small class="text-muted">
+                                    <a class="fa fa-folder-open" href="{% url 'forum:home' %}category/{{ post.category.slug }}"></a> 
+                                    <a href="{% url 'forum:home' %}/category/{{ post.category.slug }}"><strong >{{ post.category.name }}</strong></a> 
+                                    &nbsp;&nbsp;
+                                    {% if post.course %}
+                                        <i class="fa fa-mortar-board"></i> <strong>{{ post.course.name }}</strong>
+                                        &nbsp;&nbsp;
+                                    {% endif %}
+                                    <i class="fa fa-user"></i> {{ post.author.first_name }} {{ post.author.last_name }}
+                                </small>
+                            </div>
+                            
+                            <br>
+                            <div class="m-t-sm">
+                                <p style="font-size: 1.1em; line-height: 1.5;">{{ post.content }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ibox-content forum-container">
+                    
+                    <div class="forum-title">
+                        <div class="pull-right">
+                            <a href="{% url 'forum:reply' post.id %}" class="btn btn-primary btn-sm">
+                                <i class="fa fa-plus"></i> Add Reply
+                            </a>
+                        </div>
+                        <h3>Reports</h3>
+                    </div>
+
+                    {% for report in post.report_set.all %}
+                        <div class="forum-item">
+                            <div class="row">
+                                <div class="col-md-9">
+                                    <div class="forum-icon">
+                                        {% if report.author.socialaccount_set.all %}
+                                            <a href="{% url 'forum:profile' report.author_id_extracted %}">
+                                                <img src="{{ report.author.socialaccount_set.all.0.get_avatar_url }}" 
+                                                    alt="Profile Picture"
+                                                    class="rounded-circle border"
+                                                    style="width: 3em; height: 3em;" />
+                                            </a>
+                                        {% else %}
+                                            <img src="{% static 'images/studydeck.png' %}" 
+                                                alt="Profile Picture"
+                                                class="rounded-circle border"
+                                                style="width: 3em; height: 3em;" />
+                                        {% endif %}
+                                    </div>
+
+                                    {% if report.author.socialaccount_set.all %}
+                                        <a href="#" class="forum-item-title">{{ report.author.first_name }} {{ report.author.last_name }}</a>
+                                    {% else %}
+                                        <span class="forum-item-title"><strong>Unknown</strong></span>
+                                    {% endif %}
+
+                                    <div class="forum-sub-title">{{ report.description }}</div>
+
+                                </div>
+                                
+                                <div class="col-md-3 forum-info">
+                                    <small>Posted at some time</small>
+                                </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="forum-item">
+                            <div class="row">
+                                <div class="col-md-12 text-center p-md">
+                                    <span class="text-muted">No reports yet</span>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

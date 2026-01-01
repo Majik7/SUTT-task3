@@ -11,14 +11,14 @@ class Course(models.Model):
     
 class Resource(models.Model):
     category_choices = [
-        ("PDF", "PDF File"),
+        ("PDF", "PDF File"), # res.category() is PDF, res.get_category_display() is PDF File
         ("Video", "Video Lecture"),
         ("URL", "Link to external resource"), 
     ]
 
     title = models.CharField(max_length=50)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    category = models.CharField(choices=category_choices, max_length=10, default="URL")
+    category = models.CharField(choices=category_choices, max_length=30, default="URL")
 
     def __str__(self) -> str:
         return self.title

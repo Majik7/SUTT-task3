@@ -37,7 +37,7 @@ class Post(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     likes = models.IntegerField(default=0)
     is_locked = models.BooleanField(default=False)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
     # tags = models.ManyToManyField(Tag)
 
     def __str__(self) -> str:
@@ -51,6 +51,17 @@ class Post(models.Model):
         return self.author.email[1:9]
     
 class Report(models.Model):
+    statuschoice = [
+        ("R", "Resolved"),
+        ("P", "Pending"),
+        ("X", "Rejected"),
+    ]
+
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     reason = models.CharField(max_length=50)
-    desc = models.TextField()
+    description = models.TextField()
+    status = models.CharField(choices=statuschoice, max_length=15, default="P")
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    
+    def __str__(self) -> str:
+        return f"Report to post - {self.post.title}"
