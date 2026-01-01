@@ -50,7 +50,7 @@
                                     <div class="forum-icon">
                                         <i class="fa fa-shield"></i>
                                     </div>
-                                    <a href="/category/{{ category.slug }}" class="forum-item-title">{{ category.name }}</a> <!--change link-->
+                                    <a href="category/{{ category.slug }}" class="forum-item-title">{{ category.name }}</a> <!--change link-->
                                     <div class="forum-sub-title">{{ category.desc }}</div>
                                 </div>
                                 <!-- <div class="col-md-1 forum-info">
@@ -104,7 +104,7 @@
                                             <i class="fa fa-clock-o"></i>
                                         {% endif %}
                                     </div>
-                                    <a href="{{ post.id }}" class="forum-item-title">{{ post.title }} </a>
+                                    <a href="{% url 'forum:post' post.id %}" class="forum-item-title">{{ post.title }} </a>
                                     <div class="forum-sub-title">{{ post.content }}</div>
                                 </div>
                                 <!-- <div class="col-md-1 forum-info">

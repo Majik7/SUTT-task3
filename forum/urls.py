@@ -5,6 +5,9 @@ app_name = 'forum'
 urlpatterns = [
     path('', views.home, name="home"),
     path('new/', views.newPost.as_view(), name="create"),
-    path('<int:post_id>', views.postView, name="post"),
-    path('reply/<int:post_id>', views.newReply, name='reply'),
+    path('post/<int:post_id>', views.postView, name="post"),
+    path('post/<int:post_id>/reply', views.newReply, name='reply'),
+    path('category/<str:cat_slug>', views.categoryView, name="category"),
+    path('reply/<int:reply_id>/edit', views.editReply, name='editreply'),
+    path('reply/<int:reply_id>/delete', views.deleteReply, name='deletereply'),
 ]

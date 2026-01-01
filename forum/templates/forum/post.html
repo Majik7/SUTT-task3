@@ -2,48 +2,145 @@
 {% load static %}
 
 {% block content %}
-    <h1>{{ post.title }}</h1>
-    <p>{{ post.content }}</p>
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
 
-    <br>
-    <br>
-    <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
-    <h2 class="mb-0"> Replies </h2>
-        <a href="{% url 'forum:reply' post.id %}" class="btn btn-primary">
-            <i class="bi bi-plus-lg"></i> Add Reply
-        </a>
-    </div>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="wrapper wrapper-content animated fadeInRight">
 
-    {% for reply in post.reply_set.all %}
-        <div class="forum-item">
-            <div class="row">
-                <div class="col-md-9">
-                    <div class="forum-icon">
-                        {% if reply.author.socialaccount_set.all %}
-                            <a href="/profile/{{ post.author_id_extracted }}">
-                            <img src="{{ reply.author.socialaccount_set.all.0.get_avatar_url }}" 
-                                alt="Profile Picture"
-                                class="rounded-circle border"
-                                style="width: 3em; height: 3em;" />
+                <div class="ibox-content m-b-sm border-bottom">
+                    <div class="p-xs">
+                        <div class="pull-left m-r-md">
+                            {% if post.author.socialaccount_set.all %}
+                                <a href="/profile/{{ post.author_id_extracted }}">
+                                    <img src="{{ post.author.socialaccount_set.all.0.get_avatar_url }}" 
+                                        alt="Profile Picture"
+                                        class="rounded-circle border"
+                                        style="width: 3.5em; height: 3.5em; object-fit: cover;" />
+                                </a>
+                            {% else %}
+                                <i class="fa fa-comments-o text-navy mid-icon" style="font-size: 48px;"></i>
+                            {% endif %}
+                        </div>
+
+                        <div class="clear">
+                            <h2 class="m-b-none">{{ post.title }}</h2>
+                            
+                            <div class="m-t-xs">
+                                <small class="text-muted">
+                                    <a class="fa fa-folder-open" href="{% url 'forum:home' %}/category/{{ post.category.slug }}"></a> 
+                                    <a href="{% url 'forum:home' %}/category/{{ post.category.slug }}"><strong >{{ post.category.name }}</strong></a> 
+                                    &nbsp;&nbsp;
+                                    {% if post.course %}
+                                        <i class="fa fa-mortar-board"></i> <strong>{{ post.course.name }}</strong>
+                                        &nbsp;&nbsp;
+                                    {% endif %}
+                                    <i class="fa fa-user"></i> {{ post.author.first_name }} {{ post.author.last_name }}
+                                </small>
+                            </div>
+                            
+                            <br>
+                            <div class="m-t-sm">
+                                <p style="font-size: 1.1em; line-height: 1.5;">{{ post.content }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ibox-content forum-container">
+                    
+                    <div class="forum-title">
+                        <div class="pull-right">
+                            <a href="{% url 'forum:reply' post.id %}" class="btn btn-primary btn-sm">
+                                <i class="fa fa-plus"></i> Add Reply
                             </a>
-                        {% else %}
-                            <img src="{% static 'images/studydeck.png' %}" 
-                                alt="Profile Picture"
-                                class="rounded-circle border"
-                                style="width: 3em; height: 3em;" />
-                            </a>
-                        {% endif %}
+                        </div>
+                        <h3>Replies</h3>
                     </div>
 
-                    {% if reply.author.socialaccount_set.all %}
-                        <a href="{{ post.id }}" class="forum-item-title">{{ reply.author.first_name }} {{ reply.author.last_name }} </a>
-                    {% else %}
-                        <a class="forum-item-title"><b><u>ADMIN</u></b></p>
-                    {% endif %}
+                    {% for reply in post.reply_set.all %}
+                        {% if reply.is_deleted %}
+                            <div class="forum-item">
+                                <div class="row">
+                                    <div class="col-md-9">
+                                        <div class="forum-icon">
+                                                <img src="{% static 'images/deleted_icon.png' %}" 
+                                                    alt="Profile Picture"
+                                                    class="rounded-circle border"
+                                                    style="width: 3em; height: 3em;" />
+                                        </div>
+                                            <span class="forum-item-title"><strong>Deleted</strong></span>
 
-                    <div class="forum-sub-title">{{ reply.content }}</div>
+
+                                        <div class="forum-sub-title">This reply has been deleted</div>
+
+                                    </div>
+                                    
+                                    <div class="col-md-3 forum-info">
+                                        <small>Posted at some time</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                        {% else %}
+                            <div class="forum-item">
+                                <div class="row">
+                                    <div class="col-md-9">
+                                        <div class="forum-icon">
+                                            {% if reply.author.socialaccount_set.all %}
+                                                <a href="/profile/{{ reply.author_id_extracted }}">
+                                                    <img src="{{ reply.author.socialaccount_set.all.0.get_avatar_url }}" 
+                                                        alt="Profile Picture"
+                                                        class="rounded-circle border"
+                                                        style="width: 3em; height: 3em;" />
+                                                </a>
+                                            {% else %}
+                                                <img src="{% static 'images/studydeck.png' %}" 
+                                                    alt="Profile Picture"
+                                                    class="rounded-circle border"
+                                                    style="width: 3em; height: 3em;" />
+                                            {% endif %}
+                                        </div>
+
+                                        {% if reply.author.socialaccount_set.all %}
+                                            <a href="#" class="forum-item-title">{{ reply.author.first_name }} {{ reply.author.last_name }}</a>
+                                        {% else %}
+                                            <span class="forum-item-title"><strong>ADMIN</strong></span>
+                                        {% endif %}
+
+                                        <div class="forum-sub-title">{{ reply.content }}</div>
+
+                                        {% if user.is_authenticated %}
+                                            {% if user == reply.author or user.is_staff or is_mod %}
+                                                <div class="m-t-xs">
+                                                    <a href="{% url 'forum:editreply' reply.id %}" class="text-navy small">
+                                                        <i class="fa fa-edit"></i> Edit
+                                                    </a>
+                                                </div>
+                                            {% endif %}
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <div class="col-md-3 forum-info">
+                                        <small>Posted at some time</small>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% empty %}
+                        <div class="forum-item">
+                            <div class="row">
+                                <div class="col-md-12 text-center p-md">
+                                    <span class="text-muted">No replies yet. Be the first to join the conversation!</span>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
                 </div>
+
             </div>
         </div>
-    {% endfor %}
+    </div>
+</div>
 {% endblock content %}

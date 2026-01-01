@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 from django.urls import reverse
+from core.models import Course, Resource
 
 # Create your models here.
 class Category(models.Model):
@@ -24,6 +25,9 @@ class Reply(models.Model):
 
     def __str__(self) -> str:
         return f'Reply to post - {self.post}'
+    
+    def author_id_extracted(self): # using author_id conflicted with django names
+        return self.author.email[1:9]
 
 class Post(models.Model):
     title = models.CharField(max_length=100) # max length is required
@@ -32,6 +36,8 @@ class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     likes = models.IntegerField(default=0)
+    is_locked = models.BooleanField(default=False)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True)
     # tags = models.ManyToManyField(Tag)
 
     def __str__(self) -> str:

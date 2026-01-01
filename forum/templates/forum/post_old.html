@@ -1,0 +1,49 @@
+{% extends 'forum/base.html' %}
+{% load static %}
+
+{% block content %}
+    <h1>{{ post.title }}</h1>
+    <p>{{ post.content }}</p>
+
+    <br>
+    <br>
+    <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
+    <h2 class="mb-0"> Replies </h2>
+        <a href="{% url 'forum:reply' post.id %}" class="btn btn-primary">
+            <i class="bi bi-plus-lg"></i> Add Reply
+        </a>
+    </div>
+
+    {% for reply in post.reply_set.all %}
+        <div class="forum-item">
+            <div class="row">
+                <div class="col-md-9">
+                    <div class="forum-icon">
+                        {% if reply.author.socialaccount_set.all %}
+                            <a href="/profile/{{ post.author_id_extracted }}">
+                            <img src="{{ reply.author.socialaccount_set.all.0.get_avatar_url }}" 
+                                alt="Profile Picture"
+                                class="rounded-circle border"
+                                style="width: 3em; height: 3em;" />
+                            </a>
+                        {% else %}
+                            <img src="{% static 'images/studydeck.png' %}" 
+                                alt="Profile Picture"
+                                class="rounded-circle border"
+                                style="width: 3em; height: 3em;" />
+                            </a>
+                        {% endif %}
+                    </div>
+
+                    {% if reply.author.socialaccount_set.all %}
+                        <a href="{{ post.id }}" class="forum-item-title">{{ reply.author.first_name }} {{ reply.author.last_name }} </a>
+                    {% else %}
+                        <a class="forum-item-title"><b><u>ADMIN</u></b></p>
+                    {% endif %}
+
+                    <div class="forum-sub-title">{{ reply.content }}</div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock content %}
