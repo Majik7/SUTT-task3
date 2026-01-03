@@ -53,6 +53,14 @@
                                 <a href="{% url 'forum:report_post' post.id %}" class="btn btn-white btn-xs">
                                     <i class="fa fa-flag text-danger"></i> Report
                                 </a>
+
+                                {% if user == post.author or user.is_staff or is_mod %}
+                                    <a href="{% url 'forum:delete_post' post.id %}" 
+                                    class="btn btn-danger btn-xs" 
+                                    onclick="return confirm('Are you sure you want to delete this post? This cannot be undone.');">
+                                        <i class="fa fa-trash"></i> Delete
+                                    </a>
+                                {% endif %}
                             </div>
 
                         <div class="pull-left m-r-md">
@@ -77,13 +85,25 @@
                                     <a href="{% url 'forum:home' %}category/{{ post.category.slug }}"><strong >{{ post.category.name }}</strong></a> 
                                     &nbsp;&nbsp;
                                     {% if post.course %}
-                                        <i class="fa fa-mortar-board"></i> <strong>{{ post.course.name }}</strong>
+                                        <a class="fa fa-mortar-board" href="{% url 'forum:course' post.course.code %}"></a> 
+                                        <a href="{% url 'forum:course' post.course.code %}"><strong>{{ post.course.name }}</strong></a>
                                         &nbsp;&nbsp;
                                     {% endif %}
                                     <i class="fa fa-user"></i> {{ post.author.first_name }} {{ post.author.last_name }}
                                     <i class="fa fa-clock-o"></i> Posted on {{ post.date_posted|date }} at {{ post.date_posted|time }}
                                 </small>
                             </div>
+
+                            <!-- for showing tags -->
+                            {% if post.tags.all %}
+                            <div class="m-t-xs m-b-sm">
+                                {% for tag in post.tags.all %}
+                                    <a href="{% url 'forum:tag' tag.slug %}" class="btn btn-white btn-xs" style="border-radius: 10px; margin-right: 5px;">
+                                        <i class="fa fa-tag text-info"></i> {{ tag.name }}
+                                    </a>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
                             
                             <br>
                             <div class="m-t-sm">

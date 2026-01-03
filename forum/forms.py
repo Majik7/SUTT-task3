@@ -12,6 +12,11 @@ class reportForm(forms.ModelForm):
         fields = ['reason', 'description']
 
 class postForm(forms.ModelForm):
+    tags_input = forms.CharField(
+        label="Tags (Separated by commas)",
+        required=False,
+    )
+
     class Meta:
         model = Post
-        fields = ['title', 'content', 'category', 'course']
+        fields = ['title', 'content', 'category', 'course', 'tags_input']

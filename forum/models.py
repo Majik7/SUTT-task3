@@ -7,7 +7,7 @@ from core.models import Course, Resource
 # Create your models here.
 class Category(models.Model):
     name = models.CharField(max_length=20)
-    slug = models.SlugField(max_length=20)
+    slug = models.SlugField(max_length=20, unique=True)
     desc = models.TextField()
 
     def __str__(self):
@@ -15,6 +15,7 @@ class Category(models.Model):
         
 class Tag(models.Model):
     name = models.CharField(max_length=20)
+    slug = models.SlugField(unique=True, max_length=20, blank=True)
 
 class Reply(models.Model):
     content = models.TextField()
@@ -35,10 +36,10 @@ class Post(models.Model):
     date_posted = models.DateTimeField(default = timezone.now)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    likes = models.ManyToManyField(User, related_name='forum_posts', blank=True)
+    likes = models.ManyToManyField(User, related_name='liked_posts', blank=True)
     is_locked = models.BooleanField(default=False)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    # tags = models.ManyToManyField(Tag)
+    tags = models.ManyToManyField(Tag, blank=True)
 
     def __str__(self) -> str:
         return self.title

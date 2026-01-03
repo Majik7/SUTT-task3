@@ -29,4 +29,10 @@ urlpatterns = [
 
     # profile
     path('profile/<int:profile_id>', views.profileView, name='profile'),
+
+    # course
+    path('course/<str:course_code>', views.courseView, name='course'),
+
+    # tags
+    path('tag/<str:tag_slug>', views.tagView, name="tag"),
 ]

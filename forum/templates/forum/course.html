@@ -44,16 +44,12 @@
 
                             <div class="col-md-6 text-center">
                                 {% if user.is_authenticated %}
-                                    <h2 style="margin: 0;">{{ category.name }}</h2>
+                                    <h2 style="margin: 0;">{{ course }}</h2>
                                 {% endif %}
-                                <span class="text-center">{{ category.desc }}</span>
+                                <span class="text-center">Department - {{ course.dept }}</span>
                             </div>
 
-                            <div class="col-md-3 text-right">
-                                <a href="{% url 'forum:create_post_cat' category.pk %}" class="btn btn-primary btn-sm">
-                                    <i class="fa fa-pencil"></i> Create Post
-                                </a>
-                            </div>
+                            
                         </div>
                     </div>
                 </div>
@@ -88,22 +84,23 @@
                                 </div>
 
                                 <div class="col-md-1 offset-md-1 forum-info">
-                                <span class="views-number">
-                                    {{ post.likes.count }}
-                                </span>
-                                <div>
-                                    <small>Likes</small>
+                                    <span class="views-number">
+                                        {{ post.likes.count }}
+                                    </span>
+                                    <div>
+                                        <small>Likes</small>
+                                    </div>
+                                </div> 
+                                
+                                <div class="col-md-1 forum-info">
+                                    <span class="views-number">
+                                        {{ post.reply_set.count }}
+                                    </span>
+                                    <div>
+                                        <small>Replies</small>
+                                    </div>
                                 </div>
-                            </div> 
-                            <div class="col-md-1 forum-info">
-                                <span class="views-number">
-                                    {{ post.reply_set.count }}
-                                </span>
-                                <div>
-                                    <small>Replies</small>
                                 </div>
-                            </div>
-                            </div>
                         </div>
                     {% endfor %}
 

@@ -3,20 +3,28 @@ from django.http import HttpResponse
 from datetime import datetime
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import CreateView
-from .models import Post, Category, Reply, Report
+from .models import Post, Category, Reply, Report, Tag
+from core.models import Course, Resource
 from .forms import replyForm, reportForm, postForm
 from django.contrib.auth.models import User
+from django.core.paginator import Paginator
+from django.utils.text import slugify
 
 # Create your views here.
 def home(request):
     category_list = Category.objects.all()
     total_posts_count = Category.objects.all().count()
     post_list = Post.objects.all().order_by('-date_posted')
+    paginator = Paginator(post_list, 5)
+
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
 
     context = {
         "category_list": category_list,
         "total_posts_count": total_posts_count,
         "post_list": post_list,
+        "page_obj": page_obj,
     }
     return render(request, 'forum/home.html', context=context)
 
@@ -33,6 +41,14 @@ def createPostWCat(request, category_id = None):
             post.author = request.user
             post.save()
 
+            # for tags
+            tag_data = request.POST.get('tags_input', '')
+            if tag_data:
+                tag_list = [t.strip() for t in tag_data.split(',') if t.strip()]
+                for tag_name in tag_list:
+                    tag_obj, created = Tag.objects.get_or_create(name=tag_name, defaults={'slug': slugify(tag_name)})
+                    post.tags.add(tag_obj)
+
             return redirect('forum:post', post_id = post.pk)
     else:
         form = postForm(initial=initial_data)
@@ -47,6 +63,14 @@ def createPost(request):
             post = form.save(commit=False)
             post.author = request.user
             post.save()
+
+            # for tags
+            tag_data = request.POST.get('tags_input', '') # '' is fallback value
+            if tag_data:
+                tag_list = [t.strip() for t in tag_data.split(',') if t.strip()]
+                for tag_name in tag_list:
+                    tag_obj, created = Tag.objects.get_or_create(name=tag_name, defaults={'slug': slugify(tag_name)})
+                    post.tags.add(tag_obj)
 
             return redirect('forum:post', post_id = post.pk)
     else:
@@ -98,8 +122,13 @@ def newReply(request, post_id):
 
 def categoryView(request, cat_slug):
     cat = get_object_or_404(Category, slug=cat_slug)
+    post_list = cat.post_set.all().order_by('-pk')
+    paginator = Paginator(post_list, 5)
 
-    return render(request, 'forum/category.html', context={"category": cat, "post_list": cat.post_set.all().order_by('-pk')}) # type: ignore post_set error
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'forum/category.html', context={"category": cat, "post_list": post_list, "page_obj": page_obj}) # type: ignore post_set error
 
 def editReply(request, reply_id):
     reply = get_object_or_404(Reply, pk=reply_id)
@@ -136,14 +165,20 @@ def deleteReply(request, reply_id):
 def profileView(request, profile_id):
     profile_user = get_object_or_404(User, email = f"f{profile_id}@pilani.bits-pilani.ac.in")
     is_mod = profile_user.groups.filter(name='Moderators').count()
-    
     user_posts = profile_user.post_set.all().order_by('-pk') # type: ignore
+
+    paginator = Paginator(user_posts, 5)
+
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
     return render(request, 'forum/profile.html', context= {
         'profile_user': profile_user,
         'user_posts': user_posts,
         'user_post_count': user_posts.count(),
         'reply_count': profile_user.reply_set.count(), # type: ignore
         'is_mod': is_mod,
+        'page_obj': page_obj,
     })
 
 def reportPost(request, post_id):
@@ -175,6 +210,7 @@ def viewPostReports(request, post_id):
     else:
         return HttpResponse('<h1>You are not allowed here</h1>')
     
+
 def resolveReport(request, report_id):
     is_mod = request.user.groups.filter(name='Moderators').count()
 
@@ -213,3 +249,36 @@ def unlockPost(request, post_id):
     
     else:
         return HttpResponse("<h1>You are not allowed here</h1>")
+    
+def courseView(request, course_code):
+    course = get_object_or_404(Course, code=course_code)
+    post_list = course.post_set.all().order_by('-pk')
+    resource_list = course.resource_set.all()
+
+    paginator = Paginator(post_list, 5)
+
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'forum/course.html', context={
+        'post_list': post_list,
+        'resource_list': resource_list,
+        'page_obj': page_obj,
+        'course': course,
+    })
+
+
+def tagView(request, tag_slug):
+    tag = get_object_or_404(Tag, slug=tag_slug)
+    post_list = tag.post_set.all().order_by('-pk')
+
+    paginator = Paginator(post_list, 5)
+
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'forum/tag.html', context={
+        'post_list': post_list,
+        'page_obj': page_obj,
+        'tag': tag,
+    })
