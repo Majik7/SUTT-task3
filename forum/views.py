@@ -9,6 +9,7 @@ from .forms import replyForm, reportForm, postForm
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.utils.text import slugify
+from .helpers import send_reply_notification
 
 # Create your views here.
 def home(request):
@@ -114,6 +115,10 @@ def newReply(request, post_id):
             reply.post = post
             reply.author = request.user
             reply.save()
+
+            if post.author.email and post.author != request.user:
+                send_reply_notification(post, reply)
+
             return redirect('forum:post', post_id = post.pk)
     else:
         form = replyForm()
