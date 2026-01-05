@@ -34,6 +34,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS").split(" ")
 
+DEBUG = os.getenv("DEBUG", "False").lower() == "true"
+
 
 # Application definition
 
