@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 import os
 from dotenv import load_dotenv
 from pathlib import Path
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -95,6 +96,11 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+DATABASE_URL = os.getenv('POSTGRES-EXTERNAL-URL')
+DATABASES['default'] = dj_database_url.parse(DATABASE_URL)
+
+# postgresql://studydeck_forum_render_user:ZijxWjsIX3P8PPhgauzboOQX5pdNhiBC@dpg-d5dpi375r7bs73c3h0u0-a.singapore-postgres.render.com/studydeck_forum_render
 
 
 # Password validation
