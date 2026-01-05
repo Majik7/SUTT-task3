@@ -35,7 +35,7 @@ IS_RENDER = 'IS_RENDER' in os.environ
 DEBUG = IS_RENDER
 
 if IS_RENDER:
-    ALLOWED_HOSTS = [os.environ.get('ALLOWED_HOSTS'), 'sutt-task3.onrender.com']
+    ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS').split()
 else:
     ALLOWED_HOSTS = ['127.0.0.1']
 
