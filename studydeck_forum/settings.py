@@ -105,17 +105,19 @@ WSGI_APPLICATION = 'studydeck_forum.wsgi.application'
 
 DATABASE_URL = os.getenv('POSTGRES-INTERNAL-URL')
 
-if IS_RENDER:
-    DATABASES = {
-        'default': dj_database_url.config(DATABASE_URL),
-    }
-else:
-    DATABASES = {
+DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
+
+if IS_RENDER:
+    DATABASES = {
+        'default': dj_database_url.config(DATABASE_URL),
+    }
+
+    
 
 # postgresql://studydeck_forum_render_user:ZijxWjsIX3P8PPhgauzboOQX5pdNhiBC@dpg-d5dpi375r7bs73c3h0u0-a.singapore-postgres.render.com/studydeck_forum_render
 
