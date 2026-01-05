@@ -1,18 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    {% load socialaccount %}
-    <h2> Google Signin </h2>
-    <a href="{% provider_login_url  'google' %}?next=/">Login with Google</a>
+{% extends 'base.html' %}
+{% load socialaccount %}
+{% load static %}
 
-    {% if user.is_authenticated %}
-    <p>You are signed in as {{user.email}} </p>
-    <a href = "logout">Logout</a>
-    {% endif %}
-</body>
-</html>
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6 text-center">
+        <div class="card shadow-sm p-4">
+            <h2 class="mb-4">Google Signin</h2>
+            
+            {% if user.is_authenticated %}
+                <div class="alert alert-success">
+                    You are signed in as <strong>{{ user.email }}</strong>
+                </div>
+                <a href="{% url 'account_logout' %}" class="btn btn-danger btn-block">Logout</a>
+            {% else %}
+                <p class="text-muted">Welcome to StudyDeck. Please sign in to continue.</p>
+                <a href="{% provider_login_url 'google' %}?next=/" class="btn btn-outline-primary btn-lg btn-block">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" width="20px" class="mr-2">
+                    Login with Google
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
