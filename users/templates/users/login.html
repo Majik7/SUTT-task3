@@ -16,7 +16,7 @@
             {% else %}
                 <p class="text-muted">Welcome to StudyDeck. Please sign in to continue.</p>
                 <a href="{% provider_login_url 'google' %}?next=/" class="btn btn-outline-primary btn-lg btn-block">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" width="20px" class="mr-2">
+                    <img src="{% static 'images/google.png' %}" width="20px" class="mr-2">
                     Login with Google
                 </a>
             {% endif %}

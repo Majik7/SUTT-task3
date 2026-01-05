@@ -30,11 +30,14 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+IS_RENDER = 'RENDER' in os.environ
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS").split(" ")
+DEBUG = not IS_RENDER
 
-DEBUG = os.getenv("DEBUG", "False").lower() == "true"
+if IS_RENDER:
+    ALLOWED_HOSTS = [os.environ.get('ALLOWED_HOSTS')]
+else:
+    ALLOWED_HOSTS = ['127.0.0.1']
 
 
 # Application definition
@@ -62,7 +65,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    
+
     # to load static files in deployment
     'whitenoise.middleware.WhiteNoiseMiddleware',
 
@@ -100,15 +103,19 @@ WSGI_APPLICATION = 'studydeck_forum.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+DATABASE_URL = os.getenv('POSTGRES-INTERNAL-URL')
 
-DATABASE_URL = os.getenv('POSTGRES-EXTERNAL-URL')
-DATABASES['default'] = dj_database_url.parse(DATABASE_URL)
+if IS_RENDER:
+    DATABASES = {
+        'default': dj_database_url.config(DATABASE_URL),
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 # postgresql://studydeck_forum_render_user:ZijxWjsIX3P8PPhgauzboOQX5pdNhiBC@dpg-d5dpi375r7bs73c3h0u0-a.singapore-postgres.render.com/studydeck_forum_render
 
