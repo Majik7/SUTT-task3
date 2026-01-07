@@ -29,8 +29,10 @@
                     <div class="text-center">
                         {% if user.socialaccount_set.all %}
                             <span>Logged in as {{ user.first_name }} {{ user.last_name }}</span>
-                        {% else %}
+                        {% elif user.is_staff %}
                             <span>Logged in as ADMIN</span>
+                        {% else %}
+                            <span>Logged in as {{ user.username }}</span>
                         {% endif %}
                     </div>
                     </div>

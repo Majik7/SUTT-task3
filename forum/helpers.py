@@ -13,6 +13,7 @@ def send_reply_notification(post, reply):
             # print(f"{post.title}")
             
             send_mail(subject, message, from_email, recipient_list, fail_silently=True)
+            # print("SUCCESS YIPPEEE")
 
         except Exception as e:
             print(f"Email Exception - {e}")

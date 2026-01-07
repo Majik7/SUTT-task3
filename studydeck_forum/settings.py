@@ -34,6 +34,11 @@ IS_RENDER = 'IS_RENDER' in os.environ
 
 DEBUG = os.getenv('DEBUG')
 
+# DEBUG STATEMENTS REMOVE REMOVE REMOVE
+DEBUGGER = True
+# END DEBUG STATEMENTS
+
+
 if IS_RENDER:
     ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS').split()
 else:
@@ -104,6 +109,13 @@ WSGI_APPLICATION = 'studydeck_forum.wsgi.application'
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DATABASE_URL = os.getenv('POSTGRES-INTERNAL-URL')
+
+
+# DEBUG STATEMENTS REMOVE REMOVE REMOVE
+if DEBUGGER:
+    IS_RENDER = True
+    DATABASE_URL = os.getenv('POSTGRES-EXTERNAL-URL')
+# END DEBUG STATEMENTS
 
 DATABASES = {
         'default': {
