@@ -15,6 +15,6 @@ def send_reply_notification(post, reply):
             send_mail(subject, message, from_email, recipient_list, fail_silently=True)
 
         except Exception as e:
-            print(f"Exception - {e}")
+            print(f"Email Exception - {e}")
 
     threading.Thread(target=start_mail).start()

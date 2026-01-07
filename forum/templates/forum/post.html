@@ -177,8 +177,10 @@
 
                                         {% if reply.author.socialaccount_set.all %}
                                             <a href="#" class="forum-item-title">{{ reply.author.first_name }} {{ reply.author.last_name }}</a>
-                                        {% else %}
+                                        {% elif reply.author.is_staff %}
                                             <span class="forum-item-title"><strong>ADMIN</strong></span>
+                                        {% else %}
+                                            <span class="forum-item-title"><strong>{{ reply.author.username }}</strong></span>
                                         {% endif %}
 
                                         <div class="forum-sub-title">{{ reply.content }}</div>
