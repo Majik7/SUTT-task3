@@ -68,3 +68,7 @@ Visit http://127.0.0.1:8000 in a browser
 ### Forum & Discussions
 * **Thread Creation:** Users can initiate discussions by making threads
 * **Real-time Interaction:** Post authors are notified via email when their posts receive comments
+
+### Design Decisions
+* **Threading:** Threading is used while sending mails to immediately publish the reply, and process the mail in the background to avoid 500 server errors due to timeout
+

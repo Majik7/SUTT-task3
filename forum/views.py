@@ -10,6 +10,7 @@ from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.utils.text import slugify
 from .helpers import send_reply_notification
+from django.core.exceptions import PermissionDenied
 
 # Create your views here.
 def home(request):
@@ -87,7 +88,8 @@ def deletePost(request, post_id):
 
         return redirect('forum:home')
     else:
-        return HttpResponse(f"<h1>You are not allowed here {request.user.username}</h1>")
+        # return HttpResponse(f"<h1>You are not allowed here {request.user.username}</h1>")
+        raise PermissionDenied
     
 def likePost(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
@@ -152,7 +154,8 @@ def editReply(request, reply_id):
         })
     
     else:
-        return HttpResponse("<h1>You are not allowed here </h1>")
+        # return HttpResponse("<h1>You are not allowed here </h1>")
+        raise PermissionDenied
     
 def deleteReply(request, reply_id):
     reply = get_object_or_404(Reply, id=reply_id)
@@ -164,7 +167,9 @@ def deleteReply(request, reply_id):
 
         return redirect('forum:post', post_id=post_id)
     else:
-        return HttpResponse(f"<h1>You are not allowed here f{request.user.username}</h1>")
+        # return HttpResponse(f"<h1>You are not allowed here f{request.user.username}</h1>")
+        raise PermissionDenied
+
     
 
 def profileView(request, profile_id):
@@ -213,7 +218,9 @@ def viewPostReports(request, post_id):
         return render(request, 'forum/view_post_reports.html', context={'post': post, 'is_mod': is_mod, 'report_list': report_list})
     
     else:
-        return HttpResponse('<h1>You are not allowed here</h1>')
+        # return HttpResponse('<h1>You are not allowed here</h1>')
+        raise PermissionDenied
+
     
 
 def resolveReport(request, report_id):
@@ -228,7 +235,9 @@ def resolveReport(request, report_id):
         return redirect('forum:view_post_reports', post_id = post.pk)
     
     else:
-        return HttpResponse("<h1>You are not allowed here</h1>")
+        # return HttpResponse("<h1>You are not allowed here</h1>")
+        raise PermissionDenied
+
 
 
 def lockPost(request, post_id):
@@ -241,7 +250,9 @@ def lockPost(request, post_id):
         return redirect('forum:post', post_id = post_id)
     
     else:
-        return HttpResponse("<h1>You are not allowed here</h1>")
+        # return HttpResponse("<h1>You are not allowed here</h1>")
+        raise PermissionDenied
+
     
 def unlockPost(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
@@ -253,7 +264,9 @@ def unlockPost(request, post_id):
         return redirect('forum:post', post_id = post_id)
     
     else:
-        return HttpResponse("<h1>You are not allowed here</h1>")
+        # return HttpResponse("<h1>You are not allowed here</h1>")
+        raise PermissionDenied
+
     
 def courseView(request, course_code):
     course = get_object_or_404(Course, code=course_code)
