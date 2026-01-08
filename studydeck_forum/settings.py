@@ -128,9 +128,6 @@ if IS_RENDER:
     DATABASES['default'] = dj_database_url.parse(DATABASE_URL)
     DATABASES['default']['OPTIONS'] = {'sslmode': 'require'}
 
-    
-
-# postgresql://studydeck_forum_render_user:ZijxWjsIX3P8PPhgauzboOQX5pdNhiBC@dpg-d5dpi375r7bs73c3h0u0-a.singapore-postgres.render.com/studydeck_forum_render
 
 
 # Password validation
