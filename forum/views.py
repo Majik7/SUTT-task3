@@ -109,23 +109,26 @@ def postView(request, post_id):
 def newReply(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
 
-    if request.method == 'POST':
-        form = replyForm(request.POST)
-
-        if form.is_valid():
-            reply = form.save(commit=False)
-            reply.post = post
-            reply.author = request.user
-            reply.save()
-
-            if post.author.email and post.author != request.user:
-                send_reply_notification(post, reply)
-
-            return redirect('forum:post', post_id = post.pk)
+    if post.is_locked:
+        raise PermissionDenied
     else:
-        form = replyForm()
+        if request.method == 'POST':
+            form = replyForm(request.POST)
 
-    return render(request, 'forum/reply.html', {'form': form, 'post': post})
+            if form.is_valid():
+                reply = form.save(commit=False)
+                reply.post = post
+                reply.author = request.user
+                reply.save()
+
+                if post.author.email and post.author != request.user:
+                    send_reply_notification(post, reply)
+
+                return redirect('forum:post', post_id = post.pk)
+        else:
+            form = replyForm()
+
+        return render(request, 'forum/reply.html', {'form': form, 'post': post})
 
 def categoryView(request, cat_slug):
     cat = get_object_or_404(Category, slug=cat_slug)
