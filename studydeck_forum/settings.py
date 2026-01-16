@@ -32,7 +32,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 IS_RENDER = 'IS_RENDER' in os.environ
 
-DEBUG = os.getenv('DEBUG')
+DEBUG = not(IS_RENDER)
 
 if IS_RENDER:
     ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS').split()
