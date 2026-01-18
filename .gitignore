@@ -43,6 +43,9 @@ db.sqlite3
 
 # Sensitive data
 .env               # Ignore all environment variable files
+.env.dev
+.env.prod
+.env.prod.db
 .flaskenv
 
 # IDE and editor files

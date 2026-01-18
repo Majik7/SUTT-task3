@@ -17,7 +17,7 @@ import dj_database_url
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-load_dotenv(BASE_DIR / '.env')
+load_dotenv(BASE_DIR / '.env.dev')
 
 STATIC_URL = '/static/'
 
@@ -32,12 +32,14 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 IS_RENDER = 'IS_RENDER' in os.environ
 
-DEBUG = not(IS_RENDER)
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-if IS_RENDER:
-    ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS').split()
-else:
-    ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split()
+
+# if IS_RENDER:
+#     ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS').split()
+# else:
+#     ALLOWED_HOSTS = ['127.0.0.1']
 
 
 # Application definition
@@ -105,16 +107,28 @@ WSGI_APPLICATION = 'studydeck_forum.wsgi.application'
 
 DATABASE_URL = os.getenv('POSTGRES-INTERNAL-URL')
 
-DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
+# DATABASES = {
+#         'default': {
+#             'ENGINE': 'django.db.backends.sqlite3',
+#             'NAME': BASE_DIR / 'db.sqlite3',
+#         }
+#     }
 
-if IS_RENDER:
-    DATABASES['default'] = dj_database_url.parse(DATABASE_URL)
-    DATABASES['default']['OPTIONS'] = {'sslmode': 'require'}
+DATABASES = {
+    "default": {
+        "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.sqlite3"),
+        "NAME": os.environ.get("SQL_DATABASE", BASE_DIR / "db.sqlite3"),
+        "USER": os.environ.get("SQL_USER", "user"),
+        "PASSWORD": os.environ.get("SQL_PASSWORD", "password"),
+        "HOST": os.environ.get("SQL_HOST", "127.0.0.1"),
+        "PORT": os.environ.get("SQL_PORT", "5432"),
+    }
+}
+
+
+# if IS_RENDER:
+#     DATABASES['default'] = dj_database_url.parse(DATABASE_URL)
+#     DATABASES['default']['OPTIONS'] = {'sslmode': 'require'}
 
 
 
@@ -186,4 +200,11 @@ SITE_ID = 1
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:1337",
+    "http://127.0.0.1:1337",
+]
