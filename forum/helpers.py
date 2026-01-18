@@ -15,7 +15,7 @@ def send_reply_notification(post, reply):
 
         send_mail(
             subject, 
-            "Test message content", 
+            reply.content,
             settings.EMAIL_HOST_USER, 
             [recipient], 
             fail_silently=False
