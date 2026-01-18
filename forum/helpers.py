@@ -1,16 +1,16 @@
 from django.core.mail import send_mail
 from django.conf import settings
 import threading
+import logging
+logger = logging.getLogger(__name__)
 
 def send_reply_notification(post, reply):
-    print("DEBUG: send_reply_notification function TRIGGERED")
+    logger.error(f"About to send email to {post.author.email}")
     try:
         subject = f"New reply on your post: {post.title}"
         recipient = post.author.email
-        print(f"DEBUG: Attempting to send to {recipient}")
 
         if not recipient:
-            print("DEBUG: ABORTING - Recipient email is empty!")
             return
 
         send_mail(
@@ -20,6 +20,6 @@ def send_reply_notification(post, reply):
             [recipient], 
             fail_silently=False
         )
-        print("DEBUG: send_mail command EXECUTED")
+        logger.error("Email sent successfully")
     except Exception as e:
-        print(f"DEBUG: Email Exception - {e}")
+        logger.error(f"Email failed: {e}")
