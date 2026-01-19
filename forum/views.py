@@ -11,8 +11,10 @@ from django.core.paginator import Paginator
 from django.utils.text import slugify
 from .helpers import send_reply_notification
 from django.core.exceptions import PermissionDenied
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
+@login_required(login_url='users:home')
 def home(request):
     category_list = Category.objects.all()
     total_posts_count = Category.objects.all().count()
@@ -30,6 +32,7 @@ def home(request):
     }
     return render(request, 'forum/home.html', context=context)
 
+@login_required(login_url='users:home')
 def createPostWCat(request, category_id = None):
     initial_data = {}
     if category_id:
@@ -57,6 +60,7 @@ def createPostWCat(request, category_id = None):
 
     return render(request, 'forum/create_post.html', {'form': form})
 
+@login_required(login_url='users:home')
 def createPost(request):
     if request.method == 'POST':
         form = postForm(request.POST)
@@ -80,6 +84,7 @@ def createPost(request):
 
     return render(request, 'forum/create_post.html', {'form': form})
 
+@login_required(login_url='users:home')
 def deletePost(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     
@@ -91,6 +96,7 @@ def deletePost(request, post_id):
         # return HttpResponse(f"<h1>You are not allowed here {request.user.username}</h1>")
         raise PermissionDenied
     
+@login_required(login_url='users:home')
 def likePost(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     if post.likes.filter(id=request.user.id).exists():
@@ -98,7 +104,8 @@ def likePost(request, post_id):
     else:
         post.likes.add(request.user)
     return redirect('forum:post', post_id=post_id)
-    
+
+@login_required(login_url='users:home') 
 def postView(request, post_id):
     post = Post.objects.get(pk = post_id)
     is_mod = request.user.groups.filter(name='Moderators').count()
@@ -106,6 +113,7 @@ def postView(request, post_id):
 
     return render(request, 'forum/post.html', context={'post': post, 'is_mod': is_mod, 'report_list': report_list})
 
+@login_required(login_url='users:home')
 def newReply(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
 
@@ -130,6 +138,7 @@ def newReply(request, post_id):
 
         return render(request, 'forum/reply.html', {'form': form, 'post': post})
 
+@login_required(login_url='users:home')
 def categoryView(request, cat_slug):
     cat = get_object_or_404(Category, slug=cat_slug)
     post_list = cat.post_set.all().order_by('-pk')
@@ -140,6 +149,7 @@ def categoryView(request, cat_slug):
 
     return render(request, 'forum/category.html', context={"category": cat, "post_list": post_list, "page_obj": page_obj}) # type: ignore post_set error
 
+@login_required(login_url='users:home')
 def editReply(request, reply_id):
     reply = get_object_or_404(Reply, pk=reply_id)
 
@@ -159,7 +169,8 @@ def editReply(request, reply_id):
     else:
         # return HttpResponse("<h1>You are not allowed here </h1>")
         raise PermissionDenied
-    
+
+@login_required(login_url='users:home')   
 def deleteReply(request, reply_id):
     reply = get_object_or_404(Reply, id=reply_id)
     post_id = reply.post.pk
@@ -174,7 +185,7 @@ def deleteReply(request, reply_id):
         raise PermissionDenied
 
     
-
+@login_required(login_url='users:home')
 def profileView(request, profile_id):
     profile_user = get_object_or_404(User, email = f"f{profile_id}@pilani.bits-pilani.ac.in")
     is_mod = profile_user.groups.filter(name='Moderators').count()
@@ -194,6 +205,7 @@ def profileView(request, profile_id):
         'page_obj': page_obj,
     })
 
+@login_required(login_url='users:home')
 def reportPost(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
 
@@ -212,6 +224,7 @@ def reportPost(request, post_id):
 
     return render(request, 'forum/report_post.html', context={'post': post, 'form': form})
 
+@login_required(login_url='users:home')
 def viewPostReports(request, post_id):
     is_mod = request.user.groups.filter(name='Moderators').count()
 
@@ -225,7 +238,7 @@ def viewPostReports(request, post_id):
         raise PermissionDenied
 
     
-
+@login_required(login_url='users:home')
 def resolveReport(request, report_id):
     is_mod = request.user.groups.filter(name='Moderators').count()
 
@@ -242,7 +255,7 @@ def resolveReport(request, report_id):
         raise PermissionDenied
 
 
-
+@login_required(login_url='users:home')
 def lockPost(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
 
@@ -256,7 +269,7 @@ def lockPost(request, post_id):
         # return HttpResponse("<h1>You are not allowed here</h1>")
         raise PermissionDenied
 
-    
+@login_required(login_url='users:home')  
 def unlockPost(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
 
@@ -270,7 +283,7 @@ def unlockPost(request, post_id):
         # return HttpResponse("<h1>You are not allowed here</h1>")
         raise PermissionDenied
 
-    
+@login_required(login_url='users:home')  
 def courseView(request, course_code):
     course = get_object_or_404(Course, code=course_code)
     post_list = course.post_set.all().order_by('-pk')
@@ -288,7 +301,7 @@ def courseView(request, course_code):
         'course': course,
     })
 
-
+@login_required(login_url='users:home')
 def tagView(request, tag_slug):
     tag = get_object_or_404(Tag, slug=tag_slug)
     post_list = tag.post_set.all().order_by('-pk')
