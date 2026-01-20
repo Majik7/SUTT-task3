@@ -113,8 +113,9 @@ def postView(request, post_id):
     post = Post.objects.get(pk = post_id)
     is_mod = request.user.groups.filter(name='Moderators').count()
     report_list = post.report_set.filter(status='P')
+    reply_list = post.reply_set.all().order_by('-pk')
 
-    return render(request, 'forum/post.html', context={'post': post, 'is_mod': is_mod, 'report_list': report_list})
+    return render(request, 'forum/post.html', context={'post': post, 'is_mod': is_mod, 'report_list': report_list, 'reply_list': reply_list})
 
 @login_required(login_url='users:home')
 def newReply(request, post_id):

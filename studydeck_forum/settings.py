@@ -202,3 +202,5 @@ SITE_ID = 1
 
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
+
+ACCOUNT_ADAPTER = 'forum.adapters.NoSignupAccountAdapter'

@@ -135,7 +135,7 @@
                         <h3>Replies</h3>
                     </div>
 
-                    {% for reply in post.reply_set.all %}
+                    {% for reply in reply_list %}
                         {% if reply.is_deleted %}
                             <div class="forum-item">
                                 <div class="row">
