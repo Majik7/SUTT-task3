@@ -35,6 +35,19 @@
                             {% endif %}
                         {% endif %}
                         <span>Feel free to choose the topic you're interested in.</span>
+
+                        <div class="m-t-md">
+                            <form action="{% url 'forum:search' %}" method="GET">
+                                <div class="input-group">
+                                    <input type="text" name="q" placeholder="Search for posts by title (fuzzy search enabled)..." class="form-control input-sm">
+                                    <span class="input-group-btn">
+                                        <button type="submit" class="btn btn-sm btn-primary"> 
+                                            <i class="fa fa-search"></i> Search
+                                        </button>
+                                    </span>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
 

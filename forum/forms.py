@@ -20,3 +20,7 @@ class postForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = ['title', 'content', 'category', 'course', 'tags_input']
+
+class searchForm(forms.ModelForm):
+    class Meta:
+        fields = ['post_title']

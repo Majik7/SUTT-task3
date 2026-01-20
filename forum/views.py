@@ -5,13 +5,16 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import CreateView
 from .models import Post, Category, Reply, Report, Tag
 from core.models import Course, Resource
-from .forms import replyForm, reportForm, postForm
+from .forms import replyForm, reportForm, postForm, searchForm
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.utils.text import slugify
 from .helpers import send_reply_notification
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required
+from fuzzywuzzy import fuzz, process
+import logging
+logger = logging.getLogger(__name__)
 
 # Create your views here.
 @login_required(login_url='users:home')
@@ -316,3 +319,32 @@ def tagView(request, tag_slug):
         'page_obj': page_obj,
         'tag': tag,
     })
+
+@login_required(login_url='users:home')
+def searchView(request):
+    query = request.GET.get('q', '').strip()
+    post_list = []
+
+    if query:
+        all_posts = Post.objects.all().order_by('-pk')
+
+        post_dict = {}
+        for post in all_posts:
+            post_dict[post.title] = post
+
+        matches = process.extract(query=query, choices=post_dict.keys())
+
+        for title, score in matches:
+            if score > 60:
+                post_list.append(post_dict[title])
+
+    logger.error(f"{post_list}")
+
+    paginator = Paginator(post_list, 5)
+
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'forum/search.html', context={'post_list': post_list,
+                                                         'query': query,
+                                                         'page_obj': page_obj})

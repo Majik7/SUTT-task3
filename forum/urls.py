@@ -35,4 +35,7 @@ urlpatterns = [
 
     # tags
     path('tag/<str:tag_slug>', views.tagView, name="tag"),
+
+    # search
+    path('search/', views.searchView, name="search")
 ]

@@ -1,5 +1,6 @@
 {% extends 'forum/base.html' %}
 {% load static %}
+{% load markdown_extras %}
 
 {% block content %}
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
@@ -109,7 +110,8 @@
                             
                             <br>
                             <div class="m-t-sm">
-                                <p style="font-size: 1.1em; line-height: 1.5;">{{ post.content }}</p>
+                                <p style="font-size: 1.1em; line-height: 1.5;">{{ post.content | markdown | safe }}</p> 
+                                <!--doesnt print without safe because safe tells python its safe to render-->
                             </div>
                         </div>
                     </div>
@@ -185,7 +187,7 @@
                                             <span class="forum-item-title"><strong>{{ reply.author.username }}</strong></span>
                                         {% endif %}
 
-                                        <div class="forum-sub-title">{{ reply.content }}</div>
+                                        <div class="forum-sub-title">{{ reply.content | markdown | safe }}</div>
 
                                         {% if user.is_authenticated %}
                                             {% if user == reply.author or user.is_staff or is_mod %}
